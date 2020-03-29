@@ -25,24 +25,32 @@
 <script>
  DEFSTYLE = 'width:200; height:200; -moz-border-radius: 0%; -webkit-border-radius: 0%; border-radius: 0%; background-color:'
  BYTE_TO_PERCENTAGE = 100/255
- currcolor  = {
-   'r' :0,
-   'g' :0,
-   'b' :0,
- }
+                                                                    
+ rgb_from = (r,g,b) => ({
+  'r':r,
+  'g':g,
+  'b':b})
+ as_color = (rgb255) => ('#' + rgb255.r.toString(16) + rgb255.g.toString(16) + rgb255.b.toString(16))
+ rgb100 = (rgb255) => rgb_from(
+        Math.round(rgb255.r*BYTE_TO_PERCENTAGE), 
+        Math.round(rgb255.g*BYTE_TO_PERCENTAGE), 
+        Math.round(rgb255.b*BYTE_TO_PERCENTAGE))
+ subtract_rgbs = (from,what) => rgb_from(from.r-what.r, from.g-what.g, from.b-what.b)
+                                                                    
+                                                                    
+ currcolor = rgb_from(0,0,0)
+                                                                    
  function randComponent(){
    return Math.round(Math.random()*255)
  };
- function rgb_from(a,b,c){
-   return { 'r':a, 'g':b, 'b':c }
- }
  
+                                                                    
  function randomColor(){
-   rgb = rgb_from(randComponent(),randComponent(),randComponent())
+   rgb255 = rgb_from(randComponent(),randComponent(),randComponent())
    return {
-     'color' : rgb_from(Math.round(rgb.r*BYTE_TO_PERCENTAGE), Math.round(rgb.g*BYTE_TO_PERCENTAGE), Math.round(rgb.b*BYTE_TO_PERCENTAGE)),
-     'hex': '#' + rgb.r.toString(16) + rgb.g.toString(16) + rgb.b.toString(16)
-     }
+     'color': rgb100(rgb255),
+     'hex': as_color(rgb255),
+   }
  }
  function setcolor(){
    flushInputs()
@@ -58,11 +66,11 @@
    document.getElementById('b-input').value=''
  }
  function collectInputs(){
-   return {
-     'r': document.getElementById('r-input').value,
-     'g': document.getElementById('g-input').value,
-     'b': document.getElementById('b-input').value,
-   }
+   return rgb_from(
+     document.getElementById('r-input').value,
+     document.getElementById('g-input').value,
+     document.getElementById('b-input').value,
+   )
  }
  function outputResults(results,true_color){
    document.getElementById('r-out').textContent='true color is '+ true_color.r + '; difference is '+ results.r
@@ -74,11 +82,6 @@
    console.log(answers)
    console.log(currcolor)
    rgb = currcolor
-   differences = rgb_from(
-     rgb.r - answers.r,
-     rgb.g - answers.g,
-     rgb.b - answers.b,
-   )
-   outputResults(differences,rgb)
+   outputResults(subtract_rgbs(rgb, answers), rgb)
  }
 </script>
