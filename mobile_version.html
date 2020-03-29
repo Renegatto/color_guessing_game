@@ -28,7 +28,6 @@
 </div>
  
 <script>
- DEFSTYLE = 'width:200; height:200; -moz-border-radius: 0%; -webkit-border-radius: 0%; border-radius: 0%; background-color:'
  BYTE_TO_PERCENTAGE = 100/255
                                                                     
  rgb_from = (r,g,b) => ({
@@ -62,7 +61,7 @@
    square = document.getElementById('color-output')
    randcolor = randomColor()
    console.log(randcolor);
-   square.setAttribute('style',DEFSTYLE + randcolor.hex)
+   square.setAttribute('style','background-color:'  + randcolor.hex)
    currcolor = randcolor.color
  };
  function flushInputs(){
