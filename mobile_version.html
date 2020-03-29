@@ -60,7 +60,6 @@
    flushInputs()
    square = document.getElementById('color-output')
    randcolor = randomColor()
-   console.log(randcolor);
    square.setAttribute('style','background-color:'  + randcolor.hex)
    currcolor = randcolor.color
  };
@@ -83,8 +82,6 @@
  }
  function calculateResult(){
    answers = collectInputs()
-   console.log(answers)
-   console.log(currcolor)
    rgb = currcolor
    outputResults(subtract_rgbs(rgb, answers), rgb)
  }
