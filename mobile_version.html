@@ -29,7 +29,7 @@
  
 <script>
  BYTE_TO_PERCENTAGE = 100/255
-                                                                    
+ zip = (a,b) => [[a[0],b[0]],[a[1],b[1]],[a[2],b[2]]]                                                        
  rgb_from = (r,g,b) => ({
   'r':r,
   'g':g,
@@ -40,7 +40,14 @@
         Math.round(rgb255.g*BYTE_TO_PERCENTAGE), 
         Math.round(rgb255.b*BYTE_TO_PERCENTAGE))
  subtract_rgbs = (from,what) => rgb_from(from.r-what.r, from.g-what.g, from.b-what.b)
-                                                                    
+
+ list2rgb = (rgb) => rgb_from(rgb[0],rgb[1],rgb[2])
+ as_list = (rgb) => [rgb.r, rgb.g, rgb.b]
+ rgb_apply = (namepart, func) => [
+   func(document.getElementById('r-' + namepart)),
+   func(document.getElementById('g-' + namepart)),
+   func(document.getElementById('b-' + namepart)),
+  ];        
                                                                     
  currcolor = rgb_from(0,0,0)
                                                                     
@@ -69,13 +76,14 @@
    document.getElementById('b-input').value=''
  }
  function collectInputs(){
-   return rgb_from(
-     document.getElementById('r-input').value,
-     document.getElementById('g-input').value,
-     document.getElementById('b-input').value,
-   )
+   return list2rgb(rgb_apply('input', (x) => x.value ))
  }
  function outputResults(results,true_color){
+    rgb_apply(
+    zip(as_list(true_color),as_list(results)).map(
+      (true_and_results) => ('true: '+ true_and_results[0] + '; diff: '+ true_and_results[1])
+     )
+   rgb_apply('out', (elem) => {elem.textContent=true} )
    document.getElementById('r-out').textContent='true: '+ true_color.r + '; diff: '+ results.r
    document.getElementById('g-out').textContent='true: '+ true_color.g + '; diff: '+ results.g
    document.getElementById('b-out').textContent='true: '+ true_color.b + '; diff: '+ results.b
