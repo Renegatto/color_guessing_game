@@ -1,88 +1,117 @@
-<meta name="viewport" content="width=device-width, initial-scale=1" /> 
-<div>
-  <body id="color-output"style="background-color: #7f7f7f">
+<html>
+ <head> 
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+ </head> 
+ <body id="color-output" style="background-color: #7f7f7f"> 
+  <div> 
+   <div> 
+    <input type="button" style="background-color: #7f7f7f" value="Next color!" onclick="setcolor()"> 
+   </div> 
+   <div> 
+    <input id="r-input" type="range" class="rot" style="background-color: #7f7f7f" value=""> r 
+   </div> 
+    <b id="r-out" color="red"></b> 
+   <div>
+    <input id="g-input" type="range" class="rot" style="background-color: #7f7f7f" value=""> g 
+   </div>
+    <b id="g-out"></b> 
+   <div>
+    <input id="b-input" type="range" class="rot" style="background-color: #7f7f7f" value=""> b 
+   </div> 
+   
+    <b id="b-out"></b> 
+   
+   <div> 
+    <input id="foo" type="button" style="background-color: #7f7f7f" value="Submit" onclick="calculateResult()"> 
+   </div> 
+  </div> 
+  <script>
+merge = (a,b,f) => a.reduce(
+      ((acc,x) => [
+          acc[0].slice(1),
+          acc[1].concat([f(x,acc[0][0])])
+        ]),
+      [b,[]]
+    )[1]
  
-   <center>
-     <input type="button" style="background-color: #7f7f7f" value="Next color!" onclick="setcolor()">
-   </center>
+zip = (a,b) => merge(
+  a.slice(0,Math.min(a.length,b.length)),
+  b.slice(0,Math.min(a.length,b.length)), 
+  (x,y)=>[x,y]);
+RGB = {
+ inputs : [
+   document.getElementById('r-input'),
+   document.getElementById('g-input'),
+   document.getElementById('b-input'),
+ ],
+ outputs : [
+   document.getElementById('r-out'),
+   document.getElementById('g-out'),
+   document.getElementById('b-out'),
+ ],
+}
+ RGB.flushInputs = () => RGB.outputs.map(
+   elem => { elem.value = ''}),
    
-   <center>
-     <input id="r-input" style="background-color: #7f7f7f" value=""> r
-   </center>
-   <center><b id="r-out"></b></center>
-   
-   <center>
-     <input id="g-input" style="background-color: #7f7f7f" value=""> g
-   </center>
-   <center><b id="g-out"></b></center>
-   
-   <center>
-     <input id="b-input" style="background-color: #7f7f7f" value=""> b
-   </center>
-   <center><b id="b-out"></b></center>
-   
-   <center>
-     <input type="button" style="background-color: #7f7f7f" value="Submit" onclick="calculateResult()"></input>
-   </center>
- </body>
-</div>
- 
-<script>
+ RGB.collectInputs = () => RGB.inputs.reduce(
+     (acc,elem) => {
+       acc.push(elem.value)
+       return acc
+     },[]),
+ RGB.output = (rgb) => zip(
+   RGB.outputs,rgb)
+   .map(pair => {pair[0].textContent = pair[1]}),
+ RGB.flushOutputs = () => RGB.output(['','',''])
  BYTE_TO_PERCENTAGE = 100/255
-                                                                    
  rgb_from = (r,g,b) => ({
   'r':r,
   'g':g,
   'b':b})
- as_color = (rgb255) => ('#' + rgb255.r.toString(16) + rgb255.g.toString(16) + rgb255.b.toString(16))
- rgb100 = (rgb255) => rgb_from(
-        Math.round(rgb255.r*BYTE_TO_PERCENTAGE), 
-        Math.round(rgb255.g*BYTE_TO_PERCENTAGE), 
-        Math.round(rgb255.b*BYTE_TO_PERCENTAGE))
- subtract_rgbs = (from,what) => rgb_from(from.r-what.r, from.g-what.g, from.b-what.b)
-                                                                    
-                                                                    
+ color_code = (rgb255) => 
+   '#' + rgb255.map(x => x.toString(16))
+   .join('');
+   
+ rgb100 = (rgb255) => rgb255.map(
+   x => Math.round(x*BYTE_TO_PERCENTAGE));
+   
+ subtract_rgbs = (from,what) => 
+   zip(from,what)
+   .map(pair => pair[0] - pair[1]);
+  
  currcolor = rgb_from(0,0,0)
                                                                     
  function randComponent(){
    return Math.round(Math.random()*255)
  };
- 
                                                                     
  function randomColor(){
-   rgb255 = rgb_from(randComponent(),randComponent(),randComponent())
+   rgb255 = [randComponent(),randComponent(),randComponent()]
    return {
      'color': rgb100(rgb255),
-     'hex': as_color(rgb255),
+     'hex': color_code(rgb255),
    }
  }
  function setcolor(){
-   flushInputs()
+   RGB.flushInputs()
    square = document.getElementById('color-output')
    randcolor = randomColor()
    square.setAttribute('style','background-color:'  + randcolor.hex)
    currcolor = randcolor.color
  };
- function flushInputs(){
-   document.getElementById('r-input').value=''
-   document.getElementById('g-input').value=''
-   document.getElementById('b-input').value=''
- }
- function collectInputs(){
-   return rgb_from(
-     document.getElementById('r-input').value,
-     document.getElementById('g-input').value,
-     document.getElementById('b-input').value,
-   )
- }
  function outputResults(results,true_color){
-   document.getElementById('r-out').textContent='true: '+ true_color.r + '; diff: '+ results.r
-   document.getElementById('g-out').textContent='true: '+ true_color.g + '; diff: '+ results.g
-   document.getElementById('b-out').textContent='true: '+ true_color.b + '; diff: '+ results.b
+    message = (true_and_results) => ('true: '+ true_and_results[0] + '; diff: '+ true_and_results[1])
+    RGB.output(
+      zip(true_color,results).map(message)
+    )
  }
+ 
  function calculateResult(){
-   answers = collectInputs()
+   
+   answers = RGB.collectInputs()
    rgb = currcolor
    outputResults(subtract_rgbs(rgb, answers), rgb)
  }
-</script>
+ 
+</script> 
+ </body>
+</html>
