@@ -71,11 +71,9 @@ RGB = {
    RGB.outputs,rgb)
    .map(pair => {pair[0].textContent = pair[1]}),
  RGB.flushOutputs = () => RGB.output(['','',''])
+ 
  BYTE_TO_PERCENTAGE = 100/255
- rgb_from = (r,g,b) => ({
-  'r':r,
-  'g':g,
-  'b':b})
+ 
  color_code = (rgb255) => 
    '#' + rgb255.map(x => x.toString(16))
    .join('');
