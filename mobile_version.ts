@@ -37,6 +37,12 @@
   <script>
 type RGB255 = number[]
 type RGB100 = number[]
+type Colorcode = string
+type Component255 = number
+Interface Color = {
+    'color' : RGB255,
+    'hex': Colorcode,
+} 
 var merge = (a,b,f) => a.reduce(
       ((acc,x) => [
           acc[0].slice(1),
@@ -77,7 +83,7 @@ RGB.flushOutputs = () => RGB.output(['','',''])
 
 const BYTE_TO_PERCENTAGE = 100/255
 
-function color_code(color:RGB255){
+function color_code(color:RGB255):Colorcode{
   return '#' + color.map(x => x.toString(16))
   .join('');
 }
@@ -85,17 +91,17 @@ function color_code(color:RGB255){
 var rgb100 = (color:RGB255) => color.map(
   x => Math.round(x*BYTE_TO_PERCENTAGE));
   
-var subtract_rgbs = (color:RGB255, subtracted:RGB255) => 
+var subtract_rgbs = (color:RGB100, subtracted:RGB100) => 
   zip(color,subtracted)
   .map(pair => pair[0] - pair[1]);
 
-var currcolor = [0,0,0]
+var currcolor:RGB100 = [0,0,0]
                                                                   
-function randComponent(){
+function randComponent():Component255{
   return Math.round(Math.random()*255)
 };
                                                                   
-function randomColor(){
+function randomColor():Color{
   color:RGB255 = [randComponent(),randComponent(),randComponent()]
   return {
     'color': rgb100(color),
