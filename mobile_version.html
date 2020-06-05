@@ -43,10 +43,12 @@ merge = (a,b,f) => a.reduce(
       [b,[]]
     )[1]
  
-zip = (a,b) => merge(
-  a.slice(0,Math.min(a.length,b.length)),
-  b.slice(0,Math.min(a.length,b.length)), 
-  (x,y)=>[x,y]);
+Array.prototype.zip = function(b){
+	return merge(
+	  this.slice(0,Math.min(this.length,b.length)),
+	  b.slice(0,Math.min(this.length,b.length)), 
+	  (x,y)=>[x,y])
+};
 RGB = {
  inputs : [r_input,g_input,b_input],
  outputs : [r_out,g_out,b_out],
@@ -59,9 +61,10 @@ RGB = {
        acc.push(elem.value)
        return acc
      },[]),
- RGB.output = (rgb) => zip(
-   RGB.outputs,rgb)
-   .map(pair => {pair[0].textContent = pair[1]}),
+ RGB.output = (rgb) => 
+	RGB.outputs
+	.zip(rgb)
+	.map(pair => {pair[0].textContent = pair[1]}),
  RGB.flushOutputs = () => RGB.output(['','',''])
  
  BYTE_TO_PERCENTAGE = 100/255
@@ -74,7 +77,8 @@ RGB = {
    x => Math.round(x*BYTE_TO_PERCENTAGE));
    
  subtract_rgbs = (from,what) => 
-   zip(from,what)
+   from
+   .zip(what)
    .map(pair => pair[0] - pair[1]);
   
  currcolor = [0,0,0]
@@ -99,7 +103,9 @@ RGB = {
  function outputResults(results,true_color){
     message = (true_and_results) => ('true: '+ true_and_results[0] + '; diff: '+ true_and_results[1])
     RGB.output(
-      zip(true_color,results).map(message)
+      true_color
+	  .zip(results)
+	  .map(message)
     )
  }
  
