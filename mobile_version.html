@@ -93,7 +93,7 @@ RGB = {
  function setcolor(){
    RGB.flushInputs()
    randcolor = randomColor()
-   color_output.setAttribute('style','background-color:'  + randcolor.hex)
+   color_output.style = 'background-color:' + randcolor.hex
    currcolor = randcolor.color
  };
  function outputResults(results,true_color){
