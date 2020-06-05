@@ -2,7 +2,7 @@
  <head> 
   <meta name="viewport" content="width=device-width, initial-scale=1"> 
  </head> 
- <body id="color-output" style="background-color: #7f7f7f"> 
+ <body id="color_output" style="background-color: #7f7f7f"> 
   <div>
     <style>
      .rot {
@@ -17,18 +17,18 @@
     <input type="button" style="background-color: #7f7f7f" value="Next color!" onclick="setcolor()"> 
    </div> 
    <div> 
-    <input id="r-input" type="range" class="rot" style="background-color: #7f7f7f" value=""> r 
+    <input id="r_input" type="range" class="rot" style="background-color: #7f7f7f" value=""> r 
    </div> 
-    <b id="r-out" color="red"></b> 
+    <b id="r_out" color="red"></b> 
    <div>
-    <input id="g-input" type="range" class="rot" style="background-color: #7f7f7f" value=""> g 
+    <input id="g_input" type="range" class="rot" style="background-color: #7f7f7f" value=""> g 
    </div>
-    <b id="g-out"></b> 
+    <b id="g_out"></b> 
    <div>
-    <input id="b-input" type="range" class="rot" style="background-color: #7f7f7f" value=""> b 
+    <input id="b_input" type="range" class="rot" style="background-color: #7f7f7f" value=""> b 
    </div> 
    
-    <b id="b-out"></b> 
+    <b id="b_out"></b> 
    
    <div> 
     <input id="foo" type="button" style="background-color: #7f7f7f" value="Submit" onclick="calculateResult()"> 
@@ -48,16 +48,8 @@ zip = (a,b) => merge(
   b.slice(0,Math.min(a.length,b.length)), 
   (x,y)=>[x,y]);
 RGB = {
- inputs : [
-   document.getElementById('r-input'),
-   document.getElementById('g-input'),
-   document.getElementById('b-input'),
- ],
- outputs : [
-   document.getElementById('r-out'),
-   document.getElementById('g-out'),
-   document.getElementById('b-out'),
- ],
+ inputs : [r_input,g_input,b_input],
+ outputs : [r_out,g_out,b_out],
 }
  RGB.flushInputs = () => RGB.outputs.map(
    elem => { elem.value = ''}),
@@ -100,9 +92,8 @@ RGB = {
  }
  function setcolor(){
    RGB.flushInputs()
-   square = document.getElementById('color-output')
    randcolor = randomColor()
-   square.setAttribute('style','background-color:'  + randcolor.hex)
+   color_output.setAttribute('style','background-color:'  + randcolor.hex)
    currcolor = randcolor.color
  };
  function outputResults(results,true_color){
